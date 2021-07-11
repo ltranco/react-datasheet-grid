@@ -1,37 +1,42 @@
 import React, { useState } from 'react'
 import {
-  checkboxColumn,
   DataSheetGrid,
   keyColumn,
+  checkboxColumn,
   textColumn,
   Column,
+  selectColumn,
 } from 'react-datasheet-grid'
+import 'antd/dist/antd.css'
+import 'react-datasheet-grid/dist/style.css'
 import './style.css'
 
-type Row = {
-  active: boolean
-  firstName: string | null
-  lastName: string | null
-}
 
 function App() {
-  const [data, setData] = useState<Row[]>([
+  const [data, setData] = useState([
     { active: true, firstName: 'Elon', lastName: 'Musk' },
     { active: false, firstName: 'Jeff', lastName: 'Bezos' },
   ])
 
-  const columns: Column<Row>[] = [
+  const columns: Column[] = [
     {
-      ...keyColumn<Row, 'active'>('active', checkboxColumn),
+      ...keyColumn('active', checkboxColumn),
       title: 'Active',
     },
     {
-      ...keyColumn<Row, 'firstName'>('firstName', textColumn),
-      title: 'First name',
+      ...keyColumn('description', textColumn),
+      title: 'Description',
     },
     {
-      ...keyColumn<Row, 'lastName'>('lastName', textColumn),
-      title: 'Last name',
+      ...selectColumn({
+        choices: [
+          { value: '7', label: 'Model 3' },
+          { value: '8', label: 'Model 7' },
+          { value: '9', label: 'Model Y' },
+        ],
+        key: 'category',
+      }),
+      title: 'Category',
     },
   ]
 
@@ -44,7 +49,17 @@ function App() {
         background: '#f3f3f3',
       }}
     >
-      <DataSheetGrid data={data} onChange={setData} columns={columns} />
+      <DataSheetGrid
+        data={data}
+        onChange={setData}
+        columns={columns}
+      />
+
+      <pre>
+        {
+          JSON.stringify(data, null, 2)
+        }
+      </pre>
     </div>
   )
 }
