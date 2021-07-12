@@ -19,10 +19,10 @@ function App() {
   ])
 
   const columns: Column[] = [
-    {
-      ...keyColumn('active', checkboxColumn),
-      title: 'Active',
-    },
+    // {
+    //   ...keyColumn('active', checkboxColumn),
+    //   title: 'Active',
+    // },
     {
       ...keyColumn('description', textColumn),
       title: 'Description',

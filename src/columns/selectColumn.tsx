@@ -11,10 +11,7 @@ const SelectComponent = React.memo<CellProps<string | any, any>>(
         focus,
         stopEditing,
         columnData,
-        ...rest
     }) => {
-        console.log(columnData);
-        console.log(rest);
         const ref = useRef<HTMLInputElement>(null);
         const dataKey = columnData.key;
 
@@ -67,7 +64,14 @@ export const selectColumn = (options: { key: string, choices: any[] }) => {
         disableKeys: true,
         keepFocus: true,
         component: SelectComponent as CellComponent<string | null, any>,
-        deleteValue: () => null,
+        deleteValue: (data: any) => {
+            const rowData = data.rowData;
+
+            return {
+                ...rowData,
+                [key]: null,
+            };
+        },
         copyValue: (data: any) => data.rowData[key],
         pasteValue: (data: any) => ({
             ...data.rowData,
