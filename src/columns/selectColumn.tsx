@@ -12,7 +12,7 @@ const SelectComponent = React.memo<CellProps<string | any, any>>(
         stopEditing,
         columnData,
     }) => {
-        const ref = useRef<HTMLInputElement>(null);
+        const ref = useRef<any>(null);
         const dataKey = columnData.key;
 
         useLayoutEffect(() => {
