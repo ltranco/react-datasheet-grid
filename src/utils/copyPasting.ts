@@ -20,9 +20,13 @@ export const parseTextHtmlData = (data: string): string[][] => {
   }
 
   const span = doc.getElementsByTagName('span')[0]
-
   if (span) {
     return [[span.textContent ?? '']]
+  }
+
+  const p = doc.getElementsByTagName('p')[0]
+  if (p) {
+    return [[p.textContent ?? '']]
   }
 
   return [['']]
