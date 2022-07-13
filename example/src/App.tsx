@@ -42,9 +42,10 @@ function App() {
     },
     {
       ...keyColumn('auto_format', createTextColumn<number>({
-        formatBlurredInput: value => {
+        formatBlurredInput: (value, rowIndex) => {
+          const prefix = rowIndex === 0 ? '$' : '';
           const parsed = parseFloat(`${value}`);
-          return isNaN(parsed) ? '' : `$${parsed}`;
+          return isNaN(parsed) ? '' : `${prefix}${parsed}`;
         },
       })),
       title: 'Auto format',
