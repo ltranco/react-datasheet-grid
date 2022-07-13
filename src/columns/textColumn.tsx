@@ -11,11 +11,11 @@ type TextColumnOptions<T> = {
   // Value to use when deleting the cell
   deletedValue?: T
   // Parse what the user types
-  parseUserInput?: (value: string) => T
+  parseUserInput?: (value: string, rowIndex?: number) => T
   // Format the value of the input when it is blurred
-  formatBlurredInput?: (value: T) => string
+  formatBlurredInput?: (value: T, rowIndex?: number) => string
   // Format the value of the input when it gets focused
-  formatInputOnFocus?: (value: T) => string
+  formatInputOnFocus?: (value: T, rowIndex?: number) => string
   // Format the value when copy
   formatForCopy?: (value: T) => string
   // Parse the pasted value
@@ -26,9 +26,9 @@ type TextColumnData<T> = {
   placeholder?: string
   alignRight: boolean
   continuousUpdates: boolean
-  parseUserInput: (value: string) => T
-  formatBlurredInput: (value: T) => string
-  formatInputOnFocus: (value: T) => string
+  parseUserInput: (value: string, rowIndex?: number) => T
+  formatBlurredInput: (value: T, rowIndex?: number) => string
+  formatInputOnFocus: (value: T, rowIndex?: number) => string
 }
 
 const TextComponent = React.memo<
@@ -37,6 +37,7 @@ const TextComponent = React.memo<
   ({
     active,
     focus,
+    rowIndex,
     rowData,
     setRowData,
     columnData: {
@@ -90,7 +91,8 @@ const TextComponent = React.memo<
         if (ref.current) {
           // Make sure to first format the input
           ref.current.value = asyncRef.current.formatInputOnFocus(
-            asyncRef.current.rowData
+            asyncRef.current.rowData,
+            rowIndex
           )
           ref.current.focus()
           ref.current.select()
@@ -114,7 +116,7 @@ const TextComponent = React.memo<
             asyncRef.current.changedAt >= asyncRef.current.focusedAt
           ) {
             asyncRef.current.setRowData(
-              asyncRef.current.parseUserInput(ref.current.value)
+              asyncRef.current.parseUserInput(ref.current.value, rowIndex)
             )
           }
           ref.current.blur()
@@ -125,14 +127,14 @@ const TextComponent = React.memo<
     useEffect(() => {
       if (!focus && ref.current) {
         // On blur or when the data changes, format it for display
-        ref.current.value = asyncRef.current.formatBlurredInput(rowData)
+        ref.current.value = asyncRef.current.formatBlurredInput(rowData, rowIndex)
       }
     }, [focus, rowData])
 
     return (
       <input
         // We use an uncontrolled component for better performance
-        defaultValue={formatBlurredInput(rowData)}
+        defaultValue={formatBlurredInput(rowData, rowIndex)}
         className={cx('dsg-input', alignRight && 'dsg-input-align-right')}
         placeholder={active ? placeholder : undefined}
         // Important to prevent any undesired "tabbing"
@@ -147,7 +149,7 @@ const TextComponent = React.memo<
 
           // Only update the row's value as the user types if continuousUpdates is true
           if (continuousUpdates) {
-            setRowData(parseUserInput(e.target.value))
+            setRowData(parseUserInput(e.target.value, rowIndex))
           }
         }}
         onKeyDown={(e) => {
