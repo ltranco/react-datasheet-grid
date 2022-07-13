@@ -7,10 +7,19 @@ export const AddRows = ({ addRows }: AddRowsComponentProps) => {
 
   return (
     <div className="dsg-add-row">
-      <button onClick={() => addRows(value)}>Add</button>{' '}
+      <button
+        type="button"
+        className="dsg-add-row-btn"
+        onClick={() => addRows(value)}
+      >
+        Add
+      </button>{' '}
       <input
+        className="dsg-add-row-input"
         value={rawValue}
         onBlur={() => setRawValue(String(value))}
+        type="number"
+        min={1}
         onChange={(e) => {
           setRawValue(e.target.value)
           setValue(Math.max(1, Math.round(parseInt(e.target.value) || 0)))

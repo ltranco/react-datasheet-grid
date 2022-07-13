@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react'
 import { CellComponent, Column } from '../types'
 
-type ColumnData = { key: string; original: Partial<Column<any, any>> }
+type ColumnData = { key: string; original: Partial<Column<any, any, any>> }
 
 const KeyComponent: CellComponent<any, ColumnData> = ({
   columnData: { key, original },
@@ -15,7 +15,7 @@ const KeyComponent: CellComponent<any, ColumnData> = ({
 
   // We wrap the setRowData function to assign the value to the desired key
   const setKeyData = useCallback(
-    (value) => {
+    (value: any) => {
       setRowData({ ...rowDataRef.current, [key]: value })
     },
     [key, setRowData]
@@ -41,32 +41,45 @@ const KeyComponent: CellComponent<any, ColumnData> = ({
 
 export const keyColumn = <
   T extends Record<string, any>,
-  K extends keyof T = keyof T
+  K extends keyof T = keyof T,
+  PasteValue = string
 >(
   key: K,
-  column: Partial<Column<T[K], any>>
-): Partial<Column<T, ColumnData>> => ({
+  column: Partial<Column<T[K], any, PasteValue>>
+): Partial<Column<T, ColumnData, PasteValue>> => ({
+  id: key as string,
   ...column,
   // We pass the key and the original column as columnData to be able to retrieve them in the cell component
   columnData: { key: key as string, original: column },
   component: KeyComponent,
   // Here we simply wrap all functions to only pass the value of the desired key to the column, and not the entire row
-  copyValue: ({ rowData }) =>
-    column.copyValue?.({ rowData: rowData[key] }) ?? null,
-  deleteValue: ({ rowData }) => ({
+  copyValue: ({ rowData, rowIndex }) =>
+    column.copyValue?.({ rowData: rowData[key], rowIndex }) ?? null,
+  deleteValue: ({ rowData, rowIndex }) => ({
     ...rowData,
-    [key]: column.deleteValue?.({ rowData: rowData[key] }) ?? null,
+    [key]: column.deleteValue?.({ rowData: rowData[key], rowIndex }) ?? null,
   }),
-  pasteValue: ({ rowData, value }) => ({
+  pasteValue: ({ rowData, value, rowIndex }) => ({
     ...rowData,
-    [key]: column.pasteValue?.({ rowData: rowData[key], value }) ?? null,
+    [key]:
+      column.pasteValue?.({ rowData: rowData[key], value, rowIndex }) ?? null,
   }),
   disabled:
     typeof column.disabled === 'function'
-      ? ({ rowData }) => {
+      ? ({ rowData, rowIndex }) => {
           return typeof column.disabled === 'function'
-            ? column.disabled({ rowData: rowData[key] })
+            ? column.disabled({ rowData: rowData[key], rowIndex })
             : column.disabled ?? false
         }
       : column.disabled,
+  cellClassName:
+    typeof column.cellClassName === 'function'
+      ? ({ rowData, rowIndex }) => {
+          return typeof column.cellClassName === 'function'
+            ? column.cellClassName({ rowData: rowData[key], rowIndex })
+            : column.cellClassName ?? undefined
+        }
+      : column.cellClassName,
+  isCellEmpty: ({ rowData, rowIndex }) =>
+    column.isCellEmpty?.({ rowData: rowData[key], rowIndex }) ?? false,
 })

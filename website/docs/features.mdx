@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 1
 ---
 import Random from '../src/demos/random'
 import XXL from '../src/demos/xxl'
@@ -11,7 +11,8 @@ import DisableColumns from '../src/demos/disableColumns'
 # Features
 
 ## 100,000 rows
-Rows are virtualized, display performance is not impacted by the number of rows.
+Rows are virtualized, display performance is not impacted by the number of rows. Renders have been optimized to the
+strict minimum, follow the [performance guides](performance/static-vs-dynamic) to get the most out of DSG.
 <XXL />
 
 ## Simple underlying data
@@ -35,8 +36,8 @@ A lot of keyboard shortcuts are supported so power user can feel just right:
 - `Ctrl+Arrows` or `⌘+Arrows` to move to first / last / top / bottom cell
 - `Ctrl+Shift+Arrows` or `⌘+Shift+Arrows` to select to first / last / top / bottom cell
 - `Esc` to blur
-- `Enter` to start / stop editing cell
-- `Shift+Enter` to insert row bellow
+- `Enter` or `F2` to start / stop editing cell
+- `Shift+Enter` to insert row below
 - `Ctrl+D` or `⌘+D` to duplicate current row / selected rows
 - `Backspace` or `Del` to clear cell / delete rows
 - `Ctrl+A` or `⌘+A` to select all
@@ -51,9 +52,21 @@ Try right clicking on the grid, selecting a few rows, clicking on headers...
 <Random />
 
 ## Copy pasting
+<div class="text--center">
+    <img src="/img/copy-paste.gif" alt="Copy pasting demo" />
+</div>
+
 Copy pasting to and from Excel, Google-sheet, and other spreadsheet software is supported and completely customizable:
 you decide what data is copied and how pasting is handled with simple functions.
 [More details](api-reference/columns#copy-pasting) on how to customize copy pasting behavior.
+
+## Expanding selection
+<div class="text--center">
+    <img src="/img/expand-selection.gif" alt="Expanding selection demo" />
+</div>
+
+Expanding the selection is supported and can be disabled. It does not require any additional work it to work. Try it out
+on other examples!
 
 ## Lock rows
 It might be desirable to lock rows. Here the user cannot insert or delete rows, even when using keyboard shortcuts or

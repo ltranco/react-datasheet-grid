@@ -24,6 +24,7 @@ const RowComponent = React.memo(
     duplicateRows,
     stopEditing,
     getContextMenuItems,
+    rowClassName,
   }: RowProps<any>) => {
     const firstRender = useFirstRender()
 
@@ -50,14 +51,23 @@ const RowComponent = React.memo(
     }, [insertRowAfter, index])
 
     return (
-      <div className="dsg-row" style={style}>
+      <div
+        className={cx(
+          'dsg-row',
+          typeof rowClassName === 'string' ? rowClassName : null,
+          typeof rowClassName === 'function'
+            ? rowClassName({ rowData: data, rowIndex: index })
+            : null
+        )}
+        style={style}
+      >
         {columns.map((column, i) => {
           const Component = column.component
 
           const disabled =
             column.disabled === true ||
             (typeof column.disabled === 'function' &&
-              column.disabled({ rowData: data }))
+              column.disabled({ rowData: data, rowIndex: index }))
 
           return (
             <Cell
@@ -68,7 +78,10 @@ const RowComponent = React.memo(
               column={column}
               active={active}
               className={cx(
-                !column.renderWhenScrolling && renderLight && 'dsg-cell-light'
+                !column.renderWhenScrolling && renderLight && 'dsg-cell-light',
+                typeof column.cellClassName === 'function'
+                  ? column.cellClassName({ rowData: data, rowIndex: index })
+                  : column.cellClassName
               )}
             >
               {(column.renderWhenScrolling || !renderLight) && (
@@ -150,6 +163,7 @@ export const Row = <T extends any>({
           : undefined
       }
       getContextMenuItems={data.getContextMenuItems}
+      rowClassName={data.rowClassName}
     />
   )
 }

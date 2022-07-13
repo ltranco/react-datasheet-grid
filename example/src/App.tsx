@@ -5,6 +5,7 @@ import {
   checkboxColumn,
   textColumn,
   Column,
+  Row,
   selectColumn,
 } from 'react-datasheet-grid'
 import 'antd/dist/antd.css'
@@ -37,6 +38,18 @@ function App() {
         key: 'category',
       }),
       title: 'Category',
+      ...keyColumn<Row, 'active'>('active', checkboxColumn),
+      title: 'Active',
+      width: 0.5,
+    },
+    {
+      ...keyColumn<Row, 'firstName'>('firstName', textColumn),
+      title: 'First name',
+    },
+    {
+      ...keyColumn<Row, 'lastName'>('lastName', textColumn),
+      title: 'Last name',
+      width: 2,
     },
   ]
 

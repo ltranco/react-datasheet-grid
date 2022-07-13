@@ -33,10 +33,11 @@ export const HeaderRow = React.memo(() => {
               activeColMax !== undefined &&
               activeColMin <= i - 1 &&
               activeColMax >= i - 1 &&
-              'dsg-cell-header-active'
+              'dsg-cell-header-active',
+            column.headerClassName
           )}
         >
-          {column.title}
+          <div className="dsg-cell-header-container">{column.title}</div>
         </Cell>
       ))}
     </div>

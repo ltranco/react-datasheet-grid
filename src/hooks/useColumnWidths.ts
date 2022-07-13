@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useDeepEqualState } from './useDeepEqualState'
 
 export const useColumnWidths = (
-  columns: Column<any, any>[],
+  columns: Column<any, any, any>[],
   width?: number
 ) => {
   const [columnWidths, setColumnWidths] = useDeepEqualState<
@@ -62,7 +62,9 @@ export const useColumnWidths = (
     children.forEach((child) => el.appendChild(child))
     document.body.insertBefore(el, null)
 
-    setColumnWidths(children.map((child) => child.offsetWidth))
+    setColumnWidths(
+      children.map((child) => child.getBoundingClientRect().width)
+    )
     setPrevWidth(width)
 
     el.remove()
@@ -70,7 +72,7 @@ export const useColumnWidths = (
   }, [width, columnsHash])
 
   return {
-    fullWidth: prevWidth === totalWidth,
+    fullWidth: Math.abs((prevWidth ?? 0) - (totalWidth ?? 0)) < 0.1,
     columnWidths,
     columnRights,
     totalWidth,

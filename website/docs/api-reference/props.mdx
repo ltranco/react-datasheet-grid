@@ -6,7 +6,7 @@ import Options from '../../src/demos/options'
 
 # Props
 
-## data / onChange
+## value / onChange
 
 Used to control the data of the grid:
 ```tsx
@@ -15,12 +15,60 @@ function App() => {
 
   return (
     <DataSheetGrid
-      data={data}
+      value={data}
       onChange={setData}
     />
   )
 }
 ```
+
+### value
+> Type: `Array`
+
+Each element of the array is a row, elements could be anything like strings or objects.
+
+### onChange
+> Type: `(newValue: T[], operations: Operation[]) => void`
+
+The first argument is the new value with the updated rows. In most cases this is all you'll need.
+This makes it possible to directly use the state setter:
+
+```tsx
+const [ data, setData ] = useState([/*...*/])
+
+return (
+  <DataSheetGrid
+    value={data}
+    onChange={(value) => setData(value)}
+  />
+)
+
+// This is equivalent to
+return (
+  <DataSheetGrid
+    value={data}
+    onChange={setData}
+  />
+)
+```
+
+The second argument is an array of operations:
+```ts
+type Operation = {
+  type: 'UPDATE' | 'DELETE' | 'CREATE'
+  fromRowIndex: number
+  toRowIndex: number
+}
+```
+
+In most cases only one operation is passed, but it can happen that multiple operations are batched and passed as second argument.
+
+When `type` is `DELETE`, the row indices refer to the old value, not the one passed as first argument.
+`fromRowIndex` is always inclusive, and `toRowIndex` is always exclusive. This means that:
+- You can compute the number of impacted rows: `toRowIndex - fromRowIndex`
+- You can get the impacted rows: `value.slice(fromRowIndex, toRowIndex)`
+
+You can read [this recipe](../examples/tracking-rows-changes) to have an example.
 
 ## Columns
 ### columns
@@ -38,7 +86,7 @@ function App() => {
 ```
 
 ### gutterColumn
-> Type: `Column`
+> Type: `Column | false`
 
 Used to customize the gutter column to the left of the grid. Mostly used to customize the width or the component that renders the gutter.
 
@@ -50,6 +98,8 @@ function App() => {
   )
 }
 ```
+
+You can also disable the gutter completely by passing `false`.
 
 ### stickyRightColumn
 > Type: `Column`<br />
@@ -122,7 +172,37 @@ When true, a new row is added at the end of the grid when the user presses enter
 When true, no context menu is shown when right clicking. `disableContextMenu` is automatically set to `true` when
 `lockRows` is `true`.
 
+### disableExpandSelection
+> Type: `boolean`<br />
+> Default: `false`
+
+When true, the user will not be able to drag the corner of the selection to expand it.
+
+## Style
+### className
+> Type: `string`
+
+CSS class of the outer `<div />`.
+
+### style
+> Type: `CSSProperties`
+
+Style of the outer `<div />`.
+
 ## Row behavior
+### rowKey
+> Type: `string | (({ rowData: T; rowIndex: number }) => string)`<br />
+> Default: `({ rowIndex }) => rowIndex`
+
+By default, rows use the row index as the `key`, this is not ideal when inserting / deleting rows in the middle of the grid:
+React will update all rows instead of adding / deleting a single one in the middle.
+For better performance and to avoid tricky behaviors, it is recommended to use some unique id for each row.
+
+You can specify a `string` that should be a key of the row object `<DataSheetGrid value={[{ id: 'foo' }, ...]} rowKey="id" />`.
+
+For more complex cases (nested properties, compound primary keys, non object rows...) you may specify a function
+that take the row object and row index as parameters.
+
 ### createRow
 > Type: `() => any`<br />
 > Default: `() => ({})`
@@ -131,23 +211,50 @@ A function that should return a new row object. This function is called once per
 or inserts new rows. Most often used to add default values and / or random ids to new rows.
 
 ### duplicateRow
-> Type: `({ rowData }) => any`<br />
+> Type: `({ rowData, rowIndex }) => any`<br />
 > Default: `({ rowData }) => ({ ...rowData })`
 
 A function that should return a new row object from an existing row. This function is called once per row every time the user duplicates rows. Most often used to override values and / or change uniq ids when duplicating rows.
 
-### isRowEmpty
-> Type: `({ rowData }) => boolean`<br />
-> Default: A function that returns true when one of the value of `rowData` is truthy
-
-When pressing `Del`, a user can only delete empty rows. This function allows to customize what is considered
-an empty row. Most often used to ignore keys that are in the object but are not part of any column (eg. a hidden id).
-
 ## Customizable components
 ### addRowsComponent
-Used to replace the content of the "Add row" button bellow the grid. Most often used for translations,
+Used to replace the content of the "Add row" button below the grid. Most often used for translations,
 custom inputs,
-icons... View [default implementation](https://github.com/Equify/react-datasheet-grid/blob/master/src/components/AddRows.tsx).
+icons... View [default implementation](https://github.com/Equify/react-datasheet-grid/blob/master/src/components/AddRows.tsx)
+to start implementing your own from a solid base.
 
 ### contextMenuComponent
-Used to customize the context menu when right clicking. View [default implementation](https://github.com/Equify/react-datasheet-grid/blob/master/src/components/ContextMenu.tsx).
+Used to customize the context menu when right clicking. View [default implementation](https://github.com/Equify/react-datasheet-grid/blob/master/src/components/ContextMenu.tsx)
+to start implementing your own from a solid base..
+
+## Callbacks
+Callbacks receive parameters of type `Cell`. `row` is the index of the row, `col` the index of the column, and `colId`
+is the [`id`](columns#id) of the column if specified.
+
+### onFocus
+> Type: `({ cell: { colId?: string, col: number, row: number } }) => void`<br />
+> Default: `void`
+
+Called when a cell gains focus (ie. the user starts editing its content). This is not the same as active / highlighted.
+
+:::note
+To know if the grid itself is focused, you can rely on `onActiveCellChange`.
+:::
+
+### onBlur
+> Type: `({ cell: { colId?: string, col: number, row: number } }) => void`<br />
+> Default: `void`
+
+Called when a cell is blurred (ie. the user stops editing its content).
+
+### onActiveCellChange
+> Type: `({ cell: { colId?: string, col: number, row: number } | null }) => void`<br />
+> Default: `void`
+
+Called when the active / highlighted cell changes. Called with null when the grid is blurred.
+
+### onSelectionChange
+> Type: `({ selection: { min: Cell, max: Cell } | null }) => void`<br />
+> Default: `void`
+
+Called when the selection changes. Called with null when the grid is blurred.

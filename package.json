@@ -1,6 +1,6 @@
 {
   "name": "react-datasheet-grid-nextjs",
-  "version": "2.0.7",
+  "version": "4.4.1",
   "description": "An Excel-like React component to create beautiful spreadsheets.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,18 +17,23 @@
     "spreadsheet",
     "grid",
     "datasheet",
-    "table",
     "excel",
     "airtable",
-    "notion"
+    "notion",
+    "table"
   ],
   "author": "Nicolas Keller (https://github.com/nick-keller)",
   "license": "MIT",
   "repository": "Equify/react-datasheet-grid",
   "homepage": "https://react-datasheet-grid.netlify.app/",
   "devDependencies": {
-    "@types/jest": "^26.0.24",
-    "@types/react": "^17.0.11",
+    "@jest/types": "^27.4.2",
+    "@testing-library/jest-dom": "^5.15.1",
+    "@testing-library/react": "^13.1.1",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.4.0",
+    "@types/jsdom": "^16.2.13",
+    "@types/react": "^18.0.8",
     "@types/react-window": "^1.8.3",
     "@types/throttle-debounce": "^2.1.0",
     "@typescript-eslint/eslint-plugin": "^4.28.0",
@@ -37,20 +42,23 @@
     "cpx": "^1.5.0",
     "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-react": "^7.24.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "jest": "^27.0.6",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.5.0",
+    "jest": "^27.4.7",
+    "jsdom": "^16.6.0",
     "prettier": "^2.3.1",
-    "react": "^17.0.2",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.0.3",
+    "ts-node": "^10.4.0",
     "typescript": "^4.3.3"
   },
   "files": [
     "dist/**/*"
   ],
   "peerDependencies": {
-    "react": "^15.0.0 || ^16.0.0 || ^17.0.0"
+    "react": "^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0"
   },
   "dependencies": {
     "antd": "^4.16.6",

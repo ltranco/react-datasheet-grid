@@ -3,3 +3,6 @@
 /example/node_modules
 /.idea
 tsconfig.tsbuildinfo
+/coverage
+.DS_Store
+yarn.lock

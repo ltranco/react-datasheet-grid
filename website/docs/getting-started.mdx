@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 ---
 import Demo from '../src/demos/simple'
 
@@ -20,6 +20,9 @@ import {
   keyColumn,
 } from 'react-datasheet-grid'
 
+// Import the style only once in your app!
+import 'react-datasheet-grid/dist/style.css'
+
 const Example = () => {
   const [ data, setData ] = useState([
     { active: true, firstName: 'Elon', lastName: 'Musk' },
@@ -34,7 +37,7 @@ const Example = () => {
 
   return (
     <DataSheetGrid
-      data={data}
+      value={data}
       onChange={setData}
       columns={columns}
     />
@@ -42,5 +45,5 @@ const Example = () => {
 }
 ```
 
-## Output
+## Demo
 <Demo />

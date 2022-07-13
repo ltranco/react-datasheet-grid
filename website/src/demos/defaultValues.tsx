@@ -20,18 +20,18 @@ export default () => {
   return (
     <div style={{ marginBottom: 20 }}>
       <DataSheetGrid
-        data={data}
+        value={data}
         onChange={setData}
-        createRow={() => ({ int: 0, date: new Date() })}
+        createRow={() => ({ int: 25, date: new Date() })}
         duplicateRow={({ rowData }) => ({
           ...rowData,
-          int: rowData.int ?? 0,
+          int: rowData.int ?? 25,
           date: rowData.date ?? new Date(),
         })}
         columns={[
           { ...keyColumn('name', textColumn), title: 'Name' },
-          { ...keyColumn('int', intColumn), title: 'Number' },
-          { ...keyColumn('date', dateColumn), title: 'Date' },
+          { ...keyColumn('int', intColumn), title: 'Age' },
+          { ...keyColumn('date', dateColumn), title: 'Birthday' },
         ]}
       />
     </div>

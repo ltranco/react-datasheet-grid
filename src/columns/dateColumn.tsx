@@ -22,7 +22,7 @@ const DateComponent = React.memo<CellProps<Date | null, any>>(
         tabIndex={-1}
         ref={ref}
         // The `pointerEvents` trick is the same than in `textColumn`
-        // The `opacity` trick is the same than in `percentColumn`
+        // Only show the calendar symbol on non-empty cells, or when cell is active, otherwise set opacity to 0
         style={{
           pointerEvents: focus ? 'auto' : 'none',
           opacity: rowData || active ? undefined : 0,
@@ -41,7 +41,7 @@ const DateComponent = React.memo<CellProps<Date | null, any>>(
 
 DateComponent.displayName = 'DateComponent'
 
-export const dateColumn: Partial<Column<Date | null, any>> = {
+export const dateColumn: Partial<Column<Date | null, any, string>> = {
   component: DateComponent as CellComponent<Date | null, any>,
   deleteValue: () => null,
   // We convert the date to a string for copying using toISOString
@@ -53,4 +53,5 @@ export const dateColumn: Partial<Column<Date | null, any>> = {
     return isNaN(date.getTime()) ? null : date
   },
   minWidth: 170,
+  isCellEmpty: ({ rowData }) => !rowData,
 }
