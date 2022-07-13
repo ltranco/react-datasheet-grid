@@ -75,3 +75,8 @@ const Example = () => {
   )
 }
 ```
+
+## Build and publish
+- Update version in `package.json`
+- At project root, run `npm run build`
+- Run `npm publish`

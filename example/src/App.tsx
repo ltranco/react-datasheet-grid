@@ -5,11 +5,11 @@ import {
   checkboxColumn,
   textColumn,
   Column,
-  Row,
   selectColumn,
-} from 'react-datasheet-grid'
+  createTextColumn,
+} from 'react-datasheet-grid-nextjs'
 import 'antd/dist/antd.css'
-import 'react-datasheet-grid/dist/style.css'
+import 'react-datasheet-grid-nextjs/dist/style.css'
 import './style.css'
 
 
@@ -20,10 +20,10 @@ function App() {
   ])
 
   const columns: Column[] = [
-    // {
-    //   ...keyColumn('active', checkboxColumn),
-    //   title: 'Active',
-    // },
+    {
+      ...keyColumn('active', checkboxColumn),
+      title: 'Active',
+    },
     {
       ...keyColumn('description', textColumn),
       title: 'Description',
@@ -38,16 +38,23 @@ function App() {
         key: 'category',
       }),
       title: 'Category',
-      ...keyColumn<Row, 'active'>('active', checkboxColumn),
-      title: 'Active',
       width: 0.5,
     },
     {
-      ...keyColumn<Row, 'firstName'>('firstName', textColumn),
+      ...keyColumn('auto_format', createTextColumn<number>({
+        formatBlurredInput: value => {
+          const parsed = parseFloat(`${value}`);
+          return isNaN(parsed) ? '' : `$${parsed}`;
+        },
+      })),
+      title: 'Auto format',
+    },
+    {
+      ...keyColumn('firstName', textColumn),
       title: 'First name',
     },
     {
-      ...keyColumn<Row, 'lastName'>('lastName', textColumn),
+      ...keyColumn('lastName', textColumn),
       title: 'Last name',
       width: 2,
     },
@@ -58,15 +65,31 @@ function App() {
       style={{
         margin: '50px',
         padding: '50px',
-        maxWidth: '900px',
         background: '#f3f3f3',
       }}
     >
+      <h1>Basic usage</h1>
       <DataSheetGrid
-        data={data}
+        value={data}
         onChange={setData}
         columns={columns}
       />
+
+      <h1>Minimal</h1>
+
+      <div style={{
+        padding: '50px',
+        background: '#141416',
+      }}>
+        <DataSheetGrid
+          className="minimal-grid"
+          value={data}
+          onChange={setData}
+          columns={columns}
+          gutterColumn={false}
+          lockRows
+        />
+      </div>
 
       <pre>
         {

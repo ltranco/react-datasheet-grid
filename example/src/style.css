@@ -1,3 +1,48 @@
 .ant-select {
     width: 100%;
 }
+
+:root {
+  --dsg-selection-border-color: #75fbfd;
+  --dsg-border-color: #72727240;
+  --dsg-cell-background-color: transparent;
+  --dsg-header-text-color: greenyellow;
+  --dsg-header-active-text-color: greenyellow;
+}
+
+.minimal-grid .dsg-container {
+  background-color: #141416;
+  border: none;
+  border-bottom: 1px solid var(--dsg-border-color);
+}
+
+.minimal-grid .dsg-cell-header {
+  border: none;
+  justify-content: center;
+}
+
+.minimal-grid .dsg-row {
+  box-shadow: none;
+}
+
+.minimal-grid .dsg-row-header {
+  border-bottom: 1px solid var(--dsg-border-color);
+}
+
+.minimal-grid .dsg-row:not(.dsg-row-header) {  
+  border-left: 1px solid var(--dsg-border-color);
+  border-right: 0.5px solid var(--dsg-border-color);
+}
+
+.minimal-grid .dsg-cell, .minimal-grid .dsg-scrollable-view {
+  border: none;
+}
+
+.minimal-grid .dsg-row:not(.dsg-row-header) .dsg-cell {
+  color: tomato;
+}
+
+.minimal-grid .dsg-selection-col-marker, .minimal-grid .dsg-selection-row-marker {
+  display: none;
+}
+
