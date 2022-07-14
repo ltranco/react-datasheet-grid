@@ -15,9 +15,16 @@ import './style.css'
 
 function App() {
   const [data, setData] = useState([
-    { active: true, firstName: 'Elon', lastName: 'Musk' },
-    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+    { active: true, firstName: 'Elon', lastName: 'Musk', gutter: 'EPS' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos', gutter: 'Revenue' },
   ])
+
+  const customGutterColumn: Column = {
+    ...keyColumn('gutter', createTextColumn<string>({
+      formatBlurredInput: (value, rowIndex) => value,
+    })),
+    width: '0 0 100px',
+  };
 
   const columns: Column[] = [
     {
@@ -27,18 +34,6 @@ function App() {
     {
       ...keyColumn('description', textColumn),
       title: 'Description',
-    },
-    {
-      ...selectColumn({
-        choices: [
-          { value: '7', label: 'Model 3' },
-          { value: '8', label: 'Model 7' },
-          { value: '9', label: 'Model Y' },
-        ],
-        key: 'category',
-      }),
-      title: 'Category',
-      width: 0.5,
     },
     {
       ...keyColumn('auto_format', createTextColumn<number>({
@@ -58,6 +53,18 @@ function App() {
       ...keyColumn('lastName', textColumn),
       title: 'Last name',
       width: 2,
+    },
+    {
+      ...selectColumn({
+        choices: [
+          { value: '7', label: 'Model 3' },
+          { value: '8', label: 'Model 7' },
+          { value: '9', label: 'Model Y' },
+        ],
+        key: 'category',
+      }),
+      title: 'Category',
+      width: 0.5,
     },
   ]
 
@@ -87,7 +94,8 @@ function App() {
           value={data}
           onChange={setData}
           columns={columns}
-          gutterColumn={false}
+          gutterColumn={customGutterColumn}
+          rowClassName={({rowData, rowIndex}) => rowIndex === data.length - 1 ? 'dsg-last-row' : ''}
           lockRows
         />
       </div>
