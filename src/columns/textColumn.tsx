@@ -20,6 +20,8 @@ type TextColumnOptions<T> = {
   formatForCopy?: (value: T) => string
   // Parse the pasted value
   parsePastedValue?: (value: string) => T
+  // <input> element input mode for a particular row
+  inputModeForRowIndex?: (rowIndex: number) => 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' | undefined;
 }
 
 type TextColumnData<T> = {
@@ -29,6 +31,7 @@ type TextColumnData<T> = {
   parseUserInput: (value: string, rowIndex?: number) => T
   formatBlurredInput: (value: T, rowIndex?: number) => string
   formatInputOnFocus: (value: T, rowIndex?: number) => string
+  inputModeForRowIndex?: (rowIndex: number) => 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' | undefined;
 }
 
 const TextComponent = React.memo<
@@ -47,6 +50,7 @@ const TextComponent = React.memo<
       formatBlurredInput,
       parseUserInput,
       continuousUpdates,
+      inputModeForRowIndex,
     },
   }) => {
     const ref = useRef<HTMLInputElement>(null)
@@ -137,6 +141,7 @@ const TextComponent = React.memo<
         defaultValue={formatBlurredInput(rowData, rowIndex)}
         className={cx('dsg-input', alignRight && 'dsg-input-align-right')}
         placeholder={active ? placeholder : undefined}
+        inputMode={inputModeForRowIndex ? inputModeForRowIndex(rowIndex) : undefined}
         // Important to prevent any undesired "tabbing"
         tabIndex={-1}
         ref={ref}
@@ -178,6 +183,7 @@ export function createTextColumn<T = string | null>({
   formatForCopy = (value) => String(value ?? ''),
   parsePastedValue = (value) =>
     (value.replace(/[\n\r]+/g, ' ').trim() || (null as unknown)) as T,
+  inputModeForRowIndex,
 }: TextColumnOptions<T> = {}): Partial<Column<T, TextColumnData<T>, string>> {
   return {
     component: TextComponent as unknown as CellComponent<T, TextColumnData<T>>,
@@ -188,6 +194,7 @@ export function createTextColumn<T = string | null>({
       formatInputOnFocus,
       formatBlurredInput,
       parseUserInput,
+      inputModeForRowIndex,
     },
     deleteValue: () => deletedValue,
     copyValue: ({ rowData }) => formatForCopy(rowData),

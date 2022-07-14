@@ -42,6 +42,7 @@ function App() {
           const parsed = parseFloat(`${value}`);
           return isNaN(parsed) ? '' : `${prefix}${parsed}`;
         },
+        inputModeForRowIndex: (rowIndex) => "decimal",
       })),
       title: 'Auto format',
     },
@@ -71,8 +72,6 @@ function App() {
   return (
     <div
       style={{
-        margin: '50px',
-        padding: '50px',
         background: '#f3f3f3',
       }}
     >
