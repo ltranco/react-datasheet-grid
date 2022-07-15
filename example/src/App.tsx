@@ -43,6 +43,9 @@ function App() {
           return isNaN(parsed) ? '' : `${prefix}${parsed}`;
         },
         inputModeForRowIndex: (rowIndex) => "decimal",
+        additionalClassNamesForInput: (rowIndex) => {
+          return rowIndex % 2 === 0 ? 'even-row-auto-format-col' : ''
+        },
       })),
       title: 'Auto format',
     },

@@ -22,6 +22,8 @@ type TextColumnOptions<T> = {
   parsePastedValue?: (value: string) => T
   // <input> element input mode for a particular row
   inputModeForRowIndex?: (rowIndex: number) => 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' | undefined;
+  // Additional class names for the cell at row index
+  additionalClassNamesForInput?: (rowIndex: number) => string;
 }
 
 type TextColumnData<T> = {
@@ -32,6 +34,7 @@ type TextColumnData<T> = {
   formatBlurredInput: (value: T, rowIndex?: number) => string
   formatInputOnFocus: (value: T, rowIndex?: number) => string
   inputModeForRowIndex?: (rowIndex: number) => 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' | undefined;
+  additionalClassNamesForInput?: (rowIndex: number) => string;
 }
 
 const TextComponent = React.memo<
@@ -51,6 +54,7 @@ const TextComponent = React.memo<
       parseUserInput,
       continuousUpdates,
       inputModeForRowIndex,
+      additionalClassNamesForInput,
     },
   }) => {
     const ref = useRef<HTMLInputElement>(null)
@@ -139,7 +143,11 @@ const TextComponent = React.memo<
       <input
         // We use an uncontrolled component for better performance
         defaultValue={formatBlurredInput(rowData, rowIndex)}
-        className={cx('dsg-input', alignRight && 'dsg-input-align-right')}
+        className={cx(
+          'dsg-input', 
+          alignRight && 'dsg-input-align-right',
+          additionalClassNamesForInput ? additionalClassNamesForInput(rowIndex) : null,
+        )}
         placeholder={active ? placeholder : undefined}
         inputMode={inputModeForRowIndex ? inputModeForRowIndex(rowIndex) : undefined}
         // Important to prevent any undesired "tabbing"
@@ -184,6 +192,7 @@ export function createTextColumn<T = string | null>({
   parsePastedValue = (value) =>
     (value.replace(/[\n\r]+/g, ' ').trim() || (null as unknown)) as T,
   inputModeForRowIndex,
+  additionalClassNamesForInput,
 }: TextColumnOptions<T> = {}): Partial<Column<T, TextColumnData<T>, string>> {
   return {
     component: TextComponent as unknown as CellComponent<T, TextColumnData<T>>,
@@ -195,6 +204,7 @@ export function createTextColumn<T = string | null>({
       formatBlurredInput,
       parseUserInput,
       inputModeForRowIndex,
+      additionalClassNamesForInput,
     },
     deleteValue: () => deletedValue,
     copyValue: ({ rowData }) => formatForCopy(rowData),
